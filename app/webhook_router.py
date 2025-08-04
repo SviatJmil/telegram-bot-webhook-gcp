@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request
-from telegram import Update as TgUpdate
+from telegram import Update as TgUpdate, Bot
 from app.config import settings
 import logging
 import json
@@ -7,6 +7,8 @@ from datetime import datetime
 
 router = APIRouter()
 logger = logging.getLogger("webhook")
+BOT_TOKEN = settings.TELEGRAM_BOT_TOKEN  # додаєш у .env
+bot = Bot(token=BOT_TOKEN)
 
 WEBHOOK_SECRET = settings.WEBHOOK_SECRET_URL_PART
 
@@ -22,7 +24,13 @@ async def handle_webhook(request: Request):
     logger.info(f"Telegram webhook received at {received_at.isoformat()}")
     logger.info(f"Update ID: {update.update_id}")
 
+
     if update.message and update.message.text:
-        logger.info(f"Message text: {update.message.text}")
+        chat_id = update.message.chat.id
+        user_message = update.message.text
+        logger.info(f"Message text: {user_message}")
+
+        # Відправка відповіді
+        bot.send_message(chat_id=chat_id, text=f"You said: {user_message}")
 
     return {"status": "ok"}

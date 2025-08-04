@@ -7,6 +7,7 @@ load_dotenv()
 class Settings(BaseSettings):
     APP_NAME: str = "Telegram Bot Webhook Server"
     WEBHOOK_SECRET_URL_PART: str
+    TELEGRAM_BOT_TOKEN: str
 
     class Config:
         env_file = ".env"  # .env файл буде використовуватись локально, у проді змінні з ENV
