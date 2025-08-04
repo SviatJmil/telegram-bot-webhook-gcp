@@ -1,0 +1,34 @@
+steps:
+  # 1️⃣ Побудувати Docker-образ
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-t',
+        'gcr.io/telegram-webhook-468010/webhook-fastapi',
+        '.'
+      ]
+
+  # 2️⃣ Запушити образ у Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        'gcr.io/telegram-webhook-468010/webhook-fastapi'
+      ]
+
+  # 3️⃣ Задеплоїти в Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      [
+        'run', 'deploy', 'webhook-fastapi',
+        '--image', 'gcr.io/telegram-webhook-468010/webhook-fastapi',
+        '--platform', 'managed',
+        '--region', 'europe-west1',
+        '--allow-unauthenticated',
+        '--port', '8080'
+      ]
+
+images:
+  - gcr.io/telegram-webhook-468010/webhook-fastapi
