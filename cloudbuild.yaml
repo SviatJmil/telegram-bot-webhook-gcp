@@ -5,25 +5,25 @@ steps:
       [
         'build',
         '-t',
-        'gcr.io/telegram-webhook-468010/webhook-fastapi',
+        'us-docker.pkg.dev/telegram-webhook-468010/webhooks/webhook-fastapi',
         '.'
       ]
 
-  # 2️⃣ Запушити образ у Container Registry
+  # 2️⃣ Запушити образ у Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'push',
-        'gcr.io/telegram-webhook-468010/webhook-fastapi'
+        'us-docker.pkg.dev/telegram-webhook-468010/webhooks/webhook-fastapi'
       ]
 
-  # 3️⃣ Задеплоїти в Cloud Run
+  # 3️⃣ Деплой у Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       [
         'run', 'deploy', 'webhook-fastapi',
-        '--image', 'gcr.io/telegram-webhook-468010/webhook-fastapi',
+        '--image', 'us-docker.pkg.dev/telegram-webhook-468010/webhooks/webhook-fastapi',
         '--platform', 'managed',
         '--region', 'europe-west1',
         '--allow-unauthenticated',
@@ -31,7 +31,7 @@ steps:
       ]
 
 images:
-  - gcr.io/telegram-webhook-468010/webhook-fastapi
+  - us-docker.pkg.dev/telegram-webhook-468010/webhooks/webhook-fastapi
 
 options:
   logging: CLOUD_LOGGING_ONLY
