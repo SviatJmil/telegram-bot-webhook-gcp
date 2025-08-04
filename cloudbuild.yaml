@@ -5,7 +5,7 @@ steps:
       [
         'build',
         '-t',
-        'us-docker.pkg.dev/telegram-webhook-468010/webhooks/webhook-fastapi',
+        'europe-west1-docker.pkg.dev/telegram-webhook-468010/webhooks/webhook-fastapi',
         '.'
       ]
 
@@ -14,7 +14,7 @@ steps:
     args:
       [
         'push',
-        'us-docker.pkg.dev/telegram-webhook-468010/webhooks/webhook-fastapi'
+        'europe-west1-docker.pkg.dev/telegram-webhook-468010/webhooks/webhook-fastapi'
       ]
 
   # 3️⃣ Деплой у Cloud Run
@@ -23,7 +23,7 @@ steps:
     args:
       [
         'run', 'deploy', 'webhook-fastapi',
-        '--image', 'us-docker.pkg.dev/telegram-webhook-468010/webhooks/webhook-fastapi',
+        '--image', 'europe-west1-docker.pkg.dev/telegram-webhook-468010/webhooks/webhook-fastapi',
         '--platform', 'managed',
         '--region', 'europe-west1',
         '--allow-unauthenticated',
@@ -31,7 +31,7 @@ steps:
       ]
 
 images:
-  - us-docker.pkg.dev/telegram-webhook-468010/webhooks/webhook-fastapi
+  - europe-west1-docker.pkg.dev/telegram-webhook-468010/webhooks/webhook-fastapi
 
 options:
   logging: CLOUD_LOGGING_ONLY
