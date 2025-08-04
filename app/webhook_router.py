@@ -29,7 +29,8 @@ async def handle_webhook(request: Request):
         chat_id = update.message.chat.id
         user_message = update.message.text
         logger.info(f"Message text: {user_message}")
-
+        logger.info(f"BOT_TOKEN: {BOT_TOKEN}")
+        
         # Відправка відповіді
         bot.send_message(chat_id=chat_id, text=f"You said: {user_message}")
 
