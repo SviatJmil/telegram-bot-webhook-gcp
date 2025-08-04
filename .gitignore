@@ -107,7 +107,6 @@ venv.bak/
 
 # Docker
 *.dockerignore
-Dockerfile
 
 # Logs
 *.log
