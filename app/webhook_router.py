@@ -12,6 +12,8 @@ bot = Bot(token=BOT_TOKEN)
 
 WEBHOOK_SECRET = settings.WEBHOOK_SECRET_URL_PART
 
+prev_message = ''
+
 @router.post(f"/webhook/{WEBHOOK_SECRET}", status_code=200)
 async def handle_webhook(request: Request):
     body_bytes = await request.body()
@@ -22,6 +24,17 @@ async def handle_webhook(request: Request):
 
     if update.message and update.message.text:
         chat_id = update.message.chat.id
+        user_message = update.message.text
+
+        if user_message == 'ping':
+            if prev_message == 'ping':
+                prev_message = user_message
+                await bot.send_message(chat_id=chat_id, text=f"pong.. pong, bro")
+                return {"status": "ok"}
+            
+            prev_message = user_message
+            await bot.send_message(chat_id=chat_id, text=f"pong")
+            return {"status": "ok"}
 
         message = ''
 
