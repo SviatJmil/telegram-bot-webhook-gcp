@@ -60,6 +60,9 @@ uvicorn app.main:app --host 0.0.0.0 --port 8080
 '''bash
 docker build -t webhook-fastapi .
 
+Локально: 
+docker build -f Dockerfile.dev -t webhook-fastapi .
+
 
 2️⃣ Запустіть контейнер, пробросивши порт 8080:
 '''bash
