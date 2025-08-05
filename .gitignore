@@ -105,6 +105,9 @@ venv.bak/
 # PyCharm
 .idea/
 
+# Docker
+Dockerfile.dev
+
 # Logs
 *.log
 
