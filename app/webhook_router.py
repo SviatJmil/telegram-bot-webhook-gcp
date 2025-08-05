@@ -3,7 +3,7 @@ from telegram import Update as TgUpdate, Bot
 from app.config import settings
 import logging
 import json
-from datetime import datetime
+from app.utils import fetch_html, extract_titles
 
 router = APIRouter()
 logger = logging.getLogger("webhook")
@@ -20,17 +20,28 @@ async def handle_webhook(request: Request):
     # Telegram Update з python-telegram-bot
     update = TgUpdate.de_json(body_dict, bot=None)  # bot=None, бо не потрібен для парсингу
 
-    received_at = datetime.utcnow()
-    logger.info(f"Telegram webhook received at {received_at.isoformat()}")
-    logger.info(f"Update ID: {update.update_id}")
-
-
     if update.message and update.message.text:
         chat_id = update.message.chat.id
-        user_message = update.message.text
-        logger.info(f"Message text: {user_message}")
+
+        message = ''
+
+        url = "https://www.aljazeera.com/news"
+        html = fetch_html(url)
+        titles = extract_titles(html)
+
+        message += "The Latest aljazeera News: \n"
+        for i, title in enumerate(titles, 1):
+            message += f"{i}. {title}\n"
+
+        url = "https://www.nytimes.com/section/world"
+        html = fetch_html(url)
+        titles = extract_titles(html)
+
+        message += "\nThe Latest nytimes News: \n"
+        for i, title in enumerate(titles, 1):
+            message += f"{i}. {title}\n"
         
         # Відправка відповіді
-        await bot.send_message(chat_id=chat_id, text=f"You said: {user_message}")
+        await bot.send_message(chat_id=chat_id, text=f"You said: {message}")
 
     return {"status": "ok"}

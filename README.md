@@ -60,7 +60,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8080
 '''bash
 docker build -t webhook-fastapi .
 
-Локально: 
+Для нашого локалу використовуємо параметр -f Dockerfile.dev:
 docker build -f Dockerfile.dev -t webhook-fastapi .
 
 
