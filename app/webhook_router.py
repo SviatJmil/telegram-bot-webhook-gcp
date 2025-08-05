@@ -36,6 +36,9 @@ async def handle_webhook(request: Request):
             prev_message = user_message
             await bot.send_message(chat_id=chat_id, text=f"pong")
             return {"status": "ok"}
+        
+        if user_message and user_message.lower() == 'ping-from-job':
+            return {"status": "ok"}
 
         message = ''
 
