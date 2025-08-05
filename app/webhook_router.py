@@ -26,8 +26,9 @@ async def handle_webhook(request: Request):
         chat_id = update.message.chat.id
         user_message = update.message.text
 
-        if user_message == 'ping':
-            if prev_message == 'ping':
+        if user_message and user_message.lower() == 'ping':
+            global prev_message
+            if prev_message and prev_message.lower() == 'ping':
                 prev_message = user_message
                 await bot.send_message(chat_id=chat_id, text=f"pong.. pong, bro")
                 return {"status": "ok"}
