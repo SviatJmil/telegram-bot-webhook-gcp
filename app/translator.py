@@ -1,8 +1,9 @@
-from google.oauth2 import service_account
 from google.cloud import translate_v2 as translate
-from app.config import settings
-import os
+import asyncio
 import logging
+# from app.config import settings
+# from google.oauth2 import service_account
+# import os
 
 logger = logging.getLogger("webhook")
 
@@ -17,6 +18,9 @@ logger = logging.getLogger("webhook")
 # else:
 client = translate.Client()
 
+async def translate_text_async(text: str, target_lang: str = "uk") -> str:
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, translate_text, text, target_lang)
 
 def translate_text(text: str, target_lang: str = "uk") -> str:
     try:

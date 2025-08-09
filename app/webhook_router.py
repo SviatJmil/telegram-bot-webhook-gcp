@@ -1,10 +1,11 @@
+import asyncio
+import logging
+import json
 from fastapi import APIRouter, Request
 from telegram import Update as TgUpdate, Bot
 from app.config import settings
-import logging
-import json
 from app.utils import fetch_html, extract_titles
-from app.translator import translate_text
+from app.translator import translate_text_async
 
 router = APIRouter()
 logger = logging.getLogger("webhook")
@@ -13,11 +14,13 @@ bot = Bot(token=BOT_TOKEN)
 
 WEBHOOK_SECRET = settings.WEBHOOK_SECRET_URL_PART
 
-def getNews(url, sourceName):
+async def getNews(url, sourceName):
     message = ''
-    html = fetch_html(url)
+    html = await fetch_html(url)
     titles = extract_titles(html)
-    translated_titles = [translate_text(title, "uk") for title in titles]
+    translated_titles = await asyncio.gather(
+        *(translate_text_async(title, "uk") for title in titles)
+    )
 
     message += f"\nThe Latest {sourceName} News: \n"
     for i, title in enumerate(translated_titles, 1):
@@ -45,8 +48,8 @@ async def handle_webhook(request: Request):
         if user_message and user_message.lower() == 'ping-from-job':
             return {"status": "ok"}
 
-        message = getNews("https://www.aljazeera.com/news", "aljazeera")
-        message += getNews("https://www.nytimes.com/section/world", "nytimes")
+        message = await getNews("https://www.aljazeera.com/news", "aljazeera")
+        message += await getNews("https://www.nytimes.com/section/world", "nytimes")
         
         # Відправка відповіді
         await bot.send_message(chat_id=chat_id, text=f"You said: {message}")

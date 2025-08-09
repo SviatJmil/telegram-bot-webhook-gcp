@@ -1,13 +1,14 @@
-import requests
 from bs4 import BeautifulSoup
+import httpx
 
-def fetch_html(url: str) -> str:
+async def fetch_html(url: str) -> str:
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()
-    return response.text
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, headers=headers)
+        response.raise_for_status()
+        return response.text
 
 def extract_titles(html: str) -> list[str]:
     soup = BeautifulSoup(html, "html.parser")
