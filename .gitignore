@@ -114,3 +114,5 @@ Dockerfile.dev
 # OS files
 .DS_Store
 Thumbs.db
+
+service-key.json

@@ -4,6 +4,7 @@ from app.config import settings
 import logging
 import json
 from app.utils import fetch_html, extract_titles
+from app.translator import translate_text
 
 router = APIRouter()
 logger = logging.getLogger("webhook")
@@ -12,7 +13,18 @@ bot = Bot(token=BOT_TOKEN)
 
 WEBHOOK_SECRET = settings.WEBHOOK_SECRET_URL_PART
 
-prev_message = ''
+def getNews(url, sourceName):
+    message = ''
+    html = fetch_html(url)
+    titles = extract_titles(html)
+    translated_titles = [translate_text(title, "uk") for title in titles]
+
+    message += f"\nThe Latest {sourceName} News: \n"
+    for i, title in enumerate(translated_titles, 1):
+        message += f"{i}. {title}\n"
+
+    return message
+
 
 @router.post(f"/webhook/{WEBHOOK_SECRET}", status_code=200)
 async def handle_webhook(request: Request):
@@ -27,36 +39,14 @@ async def handle_webhook(request: Request):
         user_message = update.message.text
 
         if user_message and user_message.lower() == 'ping':
-            global prev_message
-            if prev_message and prev_message.lower() == 'ping':
-                prev_message = user_message
-                await bot.send_message(chat_id=chat_id, text=f"pong.. pong, bro")
-                return {"status": "ok"}
-            
-            prev_message = user_message
             await bot.send_message(chat_id=chat_id, text=f"pong")
             return {"status": "ok"}
         
         if user_message and user_message.lower() == 'ping-from-job':
             return {"status": "ok"}
 
-        message = ''
-
-        url = "https://www.aljazeera.com/news"
-        html = fetch_html(url)
-        titles = extract_titles(html)
-
-        message += "The Latest aljazeera News: \n"
-        for i, title in enumerate(titles, 1):
-            message += f"{i}. {title}\n"
-
-        url = "https://www.nytimes.com/section/world"
-        html = fetch_html(url)
-        titles = extract_titles(html)
-
-        message += "\nThe Latest nytimes News: \n"
-        for i, title in enumerate(titles, 1):
-            message += f"{i}. {title}\n"
+        message = getNews("https://www.aljazeera.com/news", "aljazeera")
+        message += getNews("https://www.nytimes.com/section/world", "nytimes")
         
         # Відправка відповіді
         await bot.send_message(chat_id=chat_id, text=f"You said: {message}")
