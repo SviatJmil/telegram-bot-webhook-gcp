@@ -18,12 +18,12 @@ async def getNews(url, sourceName):
     message = ''
     html = await fetch_html(url)
     titles = extract_titles(html)
-    translated_titles = await asyncio.gather(
-        *(translate_text_async(title, "uk") for title in titles)
-    )
+    # translated_titles = await asyncio.gather(
+    #     *(translate_text_async(title, "uk") for title in titles)
+    # )
 
     message += f"\nThe Latest {sourceName} News: \n"
-    for i, title in enumerate(translated_titles, 1):
+    for i, title in enumerate(titles, 1):
         message += f"{i}. {title}\n"
 
     return message
